@@ -2,16 +2,35 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SecondScreen extends StatelessWidget {
-  const SecondScreen();
+  final myController1 = TextEditingController();
+
+  SecondScreen();
   @override
   Widget build (BuildContext ctxt) {
     return Scaffold(
       appBar: AppBar(
         title: Text("DATA PAGE"),
       ),
-      body: StreamBuilder<List<User>>(
-          stream: readUsers(),
-          builder: (context, snapshot){
+      body:Column(
+          children: <Widget>[
+            SizedBox(
+              width: 500,
+              child: TextField(
+                controller: myController1,
+                style: const TextStyle(color: Colors.red),
+                decoration: const InputDecoration(
+                  filled: true,
+                  fillColor: Colors.black12,
+                  hintStyle: TextStyle(color: Colors.black38),
+                  enabledBorder: OutlineInputBorder(borderSide: BorderSide(width: 3, color: Colors.white12)),
+                  hintText: 'Enter the name to delete...',
+                  contentPadding: EdgeInsets.all(10),
+                ),
+              ),
+            ),
+            Expanded (child: StreamBuilder<List<User>>(
+            stream: readUsers(),
+            builder: (context, snapshot){
               if(snapshot.hasError){
                 return Text("Had some error!!!");
               }
@@ -19,15 +38,32 @@ class SecondScreen extends StatelessWidget {
                 {
                   final users = snapshot.data!;
 
-                  return ListView(
+                  return (
+                      ListView(
                     children: users.map(buildUser).toList(),
-                  );
+                  ));
                 }
               else
                 {
                   return Center(child: CircularProgressIndicator());
                 }
-          }),
+          },
+        ))]),
+      floatingActionButton: Column(mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+          FloatingActionButton(
+          onPressed: (){
+                final docUser = FirebaseFirestore.instance
+                    .collection('user')
+                    .doc('${myController1.text}');
+
+                docUser.delete();
+            },
+              backgroundColor: Color(0xFF303030),
+              tooltip: 'Click to delete data',
+              child: const Icon(Icons.minimize),
+            )],
+            )
     );
   }
 
