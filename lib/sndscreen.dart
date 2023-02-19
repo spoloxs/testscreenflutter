@@ -71,6 +71,7 @@ class SecondScreen extends StatelessWidget {
     leading: CircleAvatar(child: Text(user.name[0])),
     title: Text(user.name),
     subtitle: Text('${user.age}'),
+    onTap: (){myController1.text = user.name;},
   );
 
   Stream<List<User>> readUsers() => FirebaseFirestore.instance
