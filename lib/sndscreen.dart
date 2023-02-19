@@ -39,6 +39,7 @@ class SecondScreen extends StatelessWidget {
 
   Stream<List<User>> readUsers() => FirebaseFirestore.instance
       .collection('user') //gets all collection
+      .orderBy('name', descending: true)
       .snapshots()  //gets all documents
       .map((snapshot) =>  //returns a query snapshot of map string dynamic so that we get some json data.
         snapshot.docs.map(((doc) => User.fromJson(doc.data()))).toList()); //first go to each document data then convert json data to user objects
